@@ -1,0 +1,20 @@
+{{template "base" .}}
+
+{{define "title"}}OCR para PDF{{end}}
+
+{{define "content"}}
+<div class="container">
+    <section class="upload-section">
+        <h1>OCR para PDF</h1>
+        <p class="description">Sube un archivo PDF para extraer el texto usando OCR.</p>
+        <form id="extractForm" enctype="multipart/form-data">
+            <div class="file-input-wrapper">
+                <input type="file" name="file" id="extractFile" accept="application/pdf,.pdf" required>
+                <label for="extractFile">Seleccionar archivo PDF</label>
+            </div>
+            <button type="submit" id="extractBtn">Extraer Texto</button>
+        </form>
+        <div id="result" class="result-container"></div>
+    </section>
+</div>
+{{end}}

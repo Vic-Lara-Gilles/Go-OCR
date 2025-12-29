@@ -1,0 +1,30 @@
+{{define "base"}}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{block "title" .}}OCR System{{end}}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    <header>
+        <h1>OCR para PDF</h1>
+        <p style="opacity: 0.9; font-size: 0.95rem; margin-top: 0.25rem;">Extracción de texto con Tesseract</p>
+    </header>
+
+    <main>
+        {{block "content" .}}{{end}}
+    </main>
+
+    <footer>
+        <p>Tesseract OCR + Go + Docker</p>
+    </footer>
+
+    <script src="/static/js/app.js"></script>
+</body>
+
+</html>
+{{end}}
