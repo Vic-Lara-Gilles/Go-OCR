@@ -41,22 +41,40 @@ export default function DownloadButtons({ result }: Props) {
   }
 
   return (
-    <div className="flex flex-col sm:flex-row gap-2 my-4">
-      <Button onClick={downloadAsText} variant="primary" size="sm" className="w-full sm:w-auto text-xs sm:text-sm">
-        <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-        <span className="hidden sm:inline">Download TXT</span>
-        <span className="sm:hidden">TXT</span>
-      </Button>
-      <Button onClick={downloadAsMarkdown} variant="primary" size="sm" className="w-full sm:w-auto text-xs sm:text-sm">
-        <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-        <span className="hidden sm:inline">Download Markdown</span>
-        <span className="sm:hidden">MD</span>
-      </Button>
-      <Button onClick={downloadAsJSON} variant="primary" size="sm" className="w-full sm:w-auto text-xs sm:text-sm">
-        <FileJson className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-        <span className="hidden sm:inline">Download JSON</span>
-        <span className="sm:hidden">JSON</span>
-      </Button>
+    <div className="pt-4 border-t border-slate-200 dark:border-slate-700">
+      <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-wide">Export Options</p>
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+        <Button
+          onClick={downloadAsText}
+          variant="secondary"
+          size="sm"
+          className="w-full sm:w-auto text-xs sm:text-sm h-10 sm:h-11 shadow-sm hover:shadow-md transition-shadow"
+        >
+          <FileText className="w-4 h-4" />
+          <span className="hidden sm:inline">Download TXT</span>
+          <span className="sm:hidden">TXT</span>
+        </Button>
+        <Button
+          onClick={downloadAsMarkdown}
+          variant="secondary"
+          size="sm"
+          className="w-full sm:w-auto text-xs sm:text-sm h-10 sm:h-11 shadow-sm hover:shadow-md transition-shadow"
+        >
+          <Download className="w-4 h-4" />
+          <span className="hidden sm:inline">Download Markdown</span>
+          <span className="sm:hidden">MD</span>
+        </Button>
+        <Button
+          onClick={downloadAsJSON}
+          variant="secondary"
+          size="sm"
+          className="w-full sm:w-auto text-xs sm:text-sm h-10 sm:h-11 shadow-sm hover:shadow-md transition-shadow"
+        >
+          <FileJson className="w-4 h-4" />
+          <span className="hidden sm:inline">Download JSON</span>
+          <span className="sm:hidden">JSON</span>
+        </Button>
+      </div>
     </div>
   )
 }
