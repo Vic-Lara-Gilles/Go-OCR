@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: ocr-go
+    container_name: ocr-go-dev
     ports:
       - "8080:8080"
     volumes:
@@ -22,25 +22,6 @@ services:
       timeout: 3s
       retries: 3
       start_period: 10s
-    networks:
-      - ocr-network
-
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: ocr-frontend
-    ports:
-      - "3000:80"
-    depends_on:
-      - ocr-go
-    restart: unless-stopped
-    networks:
-      - ocr-network
-
-networks:
-  ocr-network:
-    driver: bridge
 
 volumes:
   outputs:
