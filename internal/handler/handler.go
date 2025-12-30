@@ -2,33 +2,20 @@ package handler
 
 import (
 "encoding/json"
-"html/template"
-"net/http"
+	"net/http"
 
-"github.com/rogadev/ocr-go/internal/ocr"
+	"github.com/rogadev/ocr-go/internal/ocr"
 )
 
 // Handler contains dependencies for HTTP handlers
 type Handler struct {
-	engine    ocr.Engine
-	templates *template.Template
+	engine ocr.Engine
 }
 
 // New creates a new handler
 func New(engine ocr.Engine) *Handler {
-	tmpl := template.Must(template.ParseGlob("web/templates/*.html"))
-
 	return &Handler{
-		engine:    engine,
-		templates: tmpl,
-	}
-}
-
-// Index renders the main page
-func (h *Handler) Index(w http.ResponseWriter, r *http.Request) {
-	if err := h.templates.ExecuteTemplate(w, "index.html", nil); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		engine: engine,
 	}
 }
 

@@ -48,18 +48,16 @@ func main() {
 
 	// CORS configuration
 	r.Use(cors.Handler(cors.Options{
-AllowedOrigins:   []string{"*"},
-AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
-AllowCredentials: false,
-MaxAge:           300,
-}))
+		AllowedOrigins:   []string{"http://localhost:3000", "http://localhost:5173"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
+		AllowCredentials: false,
+		MaxAge:           300,
+	}))
 
-	// Static files
-	r.Handle("/static/*", http.StripPrefix("/static/",
-http.FileServer(http.Dir("web/static"))))
-
-	// Outputs files (for downloads)
+	// Serve React frontend (production build)
+	r.Handle("/assets/*", http.StripPrefix("/assets/",
+		http.FileServer(http.Dir("frontend/dist/assets"))))
 	r.Handle("/outputs/*", http.StripPrefix("/outputs/",
 		http.FileServer(http.Dir("outputs"))))
 	r.Get("/health", h.Health)
@@ -67,6 +65,11 @@ http.FileServer(http.Dir("web/static"))))
 	// API routes
 	r.Route("/api", func(r chi.Router) {
 		r.Post("/extract", h.ExtractText)
+	})
+
+	// Serve React index.html for all other routes (SPA support)
+	r.Get("/*", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "frontend/dist/index.html")
 	})
 
 	// Server configuration
