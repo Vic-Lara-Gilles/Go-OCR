@@ -46,9 +46,6 @@ WORKDIR /app
 # Copy binary from builder
 COPY --from=builder /app/server .
 
-# Copy web assets
-COPY web/ ./web/
-
 # Create directories for uploads and outputs
 RUN mkdir -p uploads outputs && \
     chown -R appuser:appgroup /app
@@ -70,3 +67,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 
 # Run the server
 CMD ["./server"]
+
