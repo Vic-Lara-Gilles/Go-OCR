@@ -55,16 +55,23 @@ func main() {
 		MaxAge:           300,
 	}))
 
-	// Serve React frontend (production build)
-	r.Handle("/assets/*", http.StripPrefix("/assets/",
-		http.FileServer(http.Dir("frontend/dist/assets"))))
-	r.Handle("/outputs/*", http.StripPrefix("/outputs/",
-		http.FileServer(http.Dir("outputs"))))
+	// Health check (before API)
 	r.Get("/health", h.Health)
 
 	// API routes
 	r.Route("/api", func(r chi.Router) {
 		r.Post("/extract", h.ExtractText)
+	})
+
+	// Serve static files from frontend build
+	r.Handle("/assets/*", http.StripPrefix("/assets/",
+		http.FileServer(http.Dir("frontend/dist/assets"))))
+	r.Handle("/outputs/*", http.StripPrefix("/outputs/",
+		http.FileServer(http.Dir("outputs"))))
+
+	// Serve vite.svg and other root assets
+	r.Get("/vite.svg", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "frontend/dist/vite.svg")
 	})
 
 	// Serve React index.html for all other routes (SPA support)
