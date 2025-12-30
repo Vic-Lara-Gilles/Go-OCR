@@ -46,6 +46,9 @@ WORKDIR /app
 # Copy binary from builder
 COPY --from=builder /app/server .
 
+# Copy frontend build
+COPY frontend/dist ./frontend/dist
+
 # Create directories for uploads and outputs
 RUN mkdir -p uploads outputs && \
     chown -R appuser:appgroup /app
