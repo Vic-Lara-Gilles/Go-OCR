@@ -44,13 +44,20 @@ func (h *Handler) ExtractText(w http.ResponseWriter, r *http.Request) {
 	}
 	defer file.Close()
 
-	// Validate PDF file
-	if !strings.HasSuffix(strings.ToLower(header.Filename), ".pdf") {
-		h.respondError(w, http.StatusBadRequest, "Only PDF files are accepted")
+	// Validate file type
+	ext := strings.ToLower(filepath.Ext(header.Filename))
+	validExts := map[string]bool{
+		".pdf": true,
+		".png": true,
+		".jpg": true,
+		".jpeg": true,
+	}
+	if !validExts[ext] {
+		h.respondError(w, http.StatusBadRequest, "Only PDF, PNG, JPG files are accepted")
 		return
 	}
 
-	// Save PDF temporarily
+	// Save file temporarily
 	tempDir := filepath.Join("uploads", uuid.Must(uuid.NewV4()).String())
 	if err := os.MkdirAll(tempDir, 0755); err != nil {
 		h.respondError(w, http.StatusInternalServerError, "Failed to create temp directory")
@@ -58,33 +65,56 @@ func (h *Handler) ExtractText(w http.ResponseWriter, r *http.Request) {
 	}
 	defer os.RemoveAll(tempDir)
 
-	pdfPath := filepath.Join(tempDir, "input.pdf")
-	pdfFile, err := os.Create(pdfPath)
-	if err != nil {
-		h.respondError(w, http.StatusInternalServerError, "Failed to save PDF")
-		return
-	}
+	var images []string
 
-	if _, err := io.Copy(pdfFile, file); err != nil {
+	// Process based on file type
+	if ext == ".pdf" {
+		// Save PDF temporarily
+		pdfPath := filepath.Join(tempDir, "input.pdf")
+		pdfFile, err := os.Create(pdfPath)
+		if err != nil {
+			h.respondError(w, http.StatusInternalServerError, "Failed to save PDF")
+			return
+		}
+
+		if _, err := io.Copy(pdfFile, file); err != nil {
+			pdfFile.Close()
+			h.respondError(w, http.StatusInternalServerError, "Failed to write PDF")
+			return
+		}
 		pdfFile.Close()
-		h.respondError(w, http.StatusInternalServerError, "Failed to write PDF")
-		return
-	}
-	pdfFile.Close()
 
-	// Convert PDF to images using pdftoppm
-	imagePrefix := filepath.Join(tempDir, "page")
-	cmd := exec.Command("pdftoppm", "-png", "-r", "300", pdfPath, imagePrefix)
-	if err := cmd.Run(); err != nil {
-		h.respondError(w, http.StatusInternalServerError, fmt.Sprintf("Failed to convert PDF: %v", err))
-		return
-	}
+		// Convert PDF to images using pdftoppm
+		imagePrefix := filepath.Join(tempDir, "page")
+		cmd := exec.Command("pdftoppm", "-png", "-r", "300", pdfPath, imagePrefix)
+		if err := cmd.Run(); err != nil {
+			h.respondError(w, http.StatusInternalServerError, fmt.Sprintf("Failed to convert PDF: %v", err))
+			return
+		}
 
-	// Get list of generated images
-	images, err := filepath.Glob(filepath.Join(tempDir, "page-*.png"))
-	if err != nil || len(images) == 0 {
-		h.respondError(w, http.StatusInternalServerError, "No pages generated from PDF")
-		return
+		// Get list of generated images
+		images, err = filepath.Glob(filepath.Join(tempDir, "page-*.png"))
+		if err != nil || len(images) == 0 {
+			h.respondError(w, http.StatusInternalServerError, "No pages generated from PDF")
+			return
+		}
+	} else {
+		// Save image directly
+		imagePath := filepath.Join(tempDir, "image"+ext)
+		imgFile, err := os.Create(imagePath)
+		if err != nil {
+			h.respondError(w, http.StatusInternalServerError, "Failed to save image")
+			return
+		}
+
+		if _, err := io.Copy(imgFile, file); err != nil {
+			imgFile.Close()
+			h.respondError(w, http.StatusInternalServerError, "Failed to write image")
+			return
+		}
+		imgFile.Close()
+
+		images = []string{imagePath}
 	}
 
 	// Process each page
