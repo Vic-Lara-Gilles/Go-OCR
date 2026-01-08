@@ -4,12 +4,15 @@ import type { BatchResponse, OCRResult } from '../types/ocr'
 
 export function useExtractText() {
   return useMutation<OCRResult, Error, File>({
-    mutationFn: extractText,
+    mutationFn: (file) => {
+      console.log('Mutation function called with file:', file.name)
+      return extractText(file)
+    },
     onSuccess: (data) => {
       console.log('Text extracted successfully:', data.filename)
     },
     onError: (error) => {
-      console.error('Extraction failed:', error.message)
+      console.error('Extraction failed:', error.message, error)
     },
   })
 }

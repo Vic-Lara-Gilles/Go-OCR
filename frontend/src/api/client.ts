@@ -3,20 +3,30 @@ import type { APIError, BatchResponse, OCRResult } from '../types/ocr'
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 
 export async function extractText(file: File): Promise<OCRResult> {
+  console.log('Extracting text from file:', file.name, file.type, file.size)
+  console.log('API URL:', API_BASE_URL)
+
   const formData = new FormData()
   formData.append('file', file)
+
+  console.log('Sending request to:', `${API_BASE_URL}/api/extract`)
 
   const response = await fetch(`${API_BASE_URL}/api/extract`, {
     method: 'POST',
     body: formData,
   })
 
+  console.log('Response status:', response.status)
+
   if (!response.ok) {
     const error: APIError = await response.json()
+    console.error('API Error:', error)
     throw new Error(error.error || 'Failed to extract text')
   }
 
-  return response.json()
+  const result = await response.json()
+  console.log('Extraction result:', result)
+  return result
 }
 
 export async function visualizeBoxes(file: File): Promise<{

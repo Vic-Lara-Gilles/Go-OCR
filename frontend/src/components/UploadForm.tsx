@@ -45,8 +45,13 @@ export default function UploadForm() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    console.log('Form submitted')
+    console.log('Selected file:', selectedFile)
     if (selectedFile) {
+      console.log('Starting mutation with file:', selectedFile.name)
       mutation.mutate(selectedFile)
+    } else {
+      console.warn('No file selected')
     }
   }
 
@@ -77,7 +82,6 @@ export default function UploadForm() {
                 accept="image/*,.pdf"
                 className="hidden"
                 id="file-input"
-                required
               />
               <label
                 htmlFor="file-input"
