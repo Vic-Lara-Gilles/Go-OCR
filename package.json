@@ -1,7 +1,8 @@
 {
   "dependencies": {},
   "devDependencies": {
-    "husky": "^8.0.0"
+    "husky": "^8.0.0",
+    "vite-tsconfig-paths": "^6.0.4"
   },
   "scripts": {
     "prepare": "husky install"
