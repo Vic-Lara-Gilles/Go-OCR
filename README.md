@@ -702,3 +702,75 @@ Las contribuciones son bienvenidas. Por favor:
 **Nota:** Antes de contribuir, lee el [Code Review Checklist](#code-review-checklist)
 
 
+---
+
+## Descripción Rápida / Quick Description
+
+**ES:** Sistema OCR para extraer texto de PDFs e imágenes, con API REST y frontend moderno. Ideal para digitalización de documentos y análisis automatizado.
+
+**EN:** OCR system to extract text from PDFs and images, with a REST API and modern frontend. Ideal for document digitization and automated analysis.
+
+---
+
+## Diagrama de Flujo de Usuario (User Journey)
+
+```mermaid
+flowchart TD
+    A[Usuario accede a la web] --> B[Sube PDF o imagen]
+    B --> C[Frontend envía archivo a API]
+    C --> D[Backend procesa con Tesseract]
+    D --> E[Se generan outputs JSON/TXT/MD]
+    E --> F[Frontend muestra resultados y descarga]
+```
+
+---
+
+## Ejemplo Visual de la Interfaz
+
+![Demo UI](https://raw.githubusercontent.com/ro-01/Go-OCR/main/frontend/public/demo-ui.png)
+
+---
+
+## Preguntas Frecuentes (FAQ)
+
+**¿Qué formatos soporta?**
+PDF, PNG, JPG, JPEG (y fácilmente extensible a TIFF).
+
+**¿Cómo cambio el idioma del OCR?**
+Edita la variable `TESSERACT_LANG` en el archivo `.env`.
+
+**¿Dónde se guardan los resultados?**
+En la carpeta `outputs/` del backend.
+
+**¿Puedo usar otro motor OCR?**
+Sí, implementa la interfaz `Engine` y actualiza la inyección en `main.go`.
+
+**¿El frontend funciona por separado?**
+Sí, puedes levantarlo con Vite y apuntar la variable `VITE_API_URL` al backend.
+
+---
+
+## Problemas Comunes y Soluciones (Troubleshooting)
+
+- **Error: "tesseract not found"**
+  - Solución: Asegúrate de que Tesseract esté instalado y en el PATH del contenedor o sistema.
+- **Archivos grandes fallan al subir**
+  - Solución: Aumenta `MAX_UPLOAD_SIZE` en el backend y revisa límites de nginx/frontend.
+- **Resultados vacíos o incompletos**
+  - Solución: Verifica la calidad de la imagen/PDF y el idioma configurado.
+- **Frontend no conecta con backend**
+  - Solución: Revisa CORS y la variable `VITE_API_URL`.
+
+---
+
+## Créditos y Agradecimientos
+
+- [Tesseract OCR](https://github.com/tesseract-ocr/tesseract)
+- [Poppler](https://poppler.freedesktop.org/)
+- [Go-Chi](https://github.com/go-chi/chi)
+- [gosseract](https://github.com/otiai10/gosseract)
+- [React](https://react.dev/)
+- [Lucide Icons](https://lucide.dev/)
+- Comunidad open source y testers
+
+
