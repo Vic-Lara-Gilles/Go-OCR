@@ -1,16 +1,27 @@
 
+
 import { Monitor, Moon, Sun } from 'lucide-react'
+import { useEffect } from 'react'
 import { useTheme } from '../hooks/useTheme'
 
+
+
+// Componente desacoplado para el icono
+function ThemeIcon({ theme }: { theme: string }) {
+  if (theme === 'light') return <Sun size={16} className="transition-transform duration-300 rotate-0" key="sun" />
+  if (theme === 'dark') return <Moon size={16} className="transition-transform duration-300 rotate-180" key="moon" />
+  return <Monitor size={16} className="transition-transform duration-300" key="monitor" />
+}
 
 export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme()
 
-  // Optimizado: icono como constante
-  const icon =
-    theme === 'light' ? <Sun size={16} className="transition-transform duration-300 rotate-0" key="sun" /> :
-    theme === 'dark' ? <Moon size={16} className="transition-transform duration-300 rotate-180" key="moon" /> :
-    <Monitor size={16} className="transition-transform duration-300" key="monitor" />
+  // Persistencia en localStorage
+  useEffect(() => {
+    if (theme) {
+      window.localStorage.setItem('theme', theme)
+    }
+  }, [theme])
 
   // Accesibilidad: aria-label y aria-pressed
   const ariaLabel = theme === 'light'
@@ -29,7 +40,7 @@ export function ThemeToggle() {
       title={`Theme: ${theme} (click to cycle)`}
     >
       <span className="inline-block transition-transform duration-300" key={theme}>
-        {icon}
+        <ThemeIcon theme={theme} />
       </span>
     </button>
   )
